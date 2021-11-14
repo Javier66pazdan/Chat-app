@@ -1,7 +1,7 @@
 import * as firebase from 'firebase/app';
 import { initializeApp } from 'firebase/app';
-import {getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile} from 'firebase/auth';
-import {getFirestore} from 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import {API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID} from './config/key';
 
 const firebaseApp = initializeApp({
@@ -16,4 +16,4 @@ const firebaseApp = initializeApp({
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp)
 
-export {db, auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile};
+export {addDoc, collection, db, auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile};

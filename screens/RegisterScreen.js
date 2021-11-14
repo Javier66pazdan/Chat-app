@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Input, Button } from "react-native-elements";
 import {auth, createUserWithEmailAndPassword, updateProfile} from "../firebase";
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
@@ -23,6 +23,8 @@ const RegisterScreen = () => {
                 }).catch((error) => {
                     // An error occurred
                     // ...
+
+                    navigation.popToTop();
                 });
             })
             .catch((error) => {

@@ -21,6 +21,9 @@ const LoginScreen = ({navigation}) => {
                 const uid = user.uid;
                 navigation.replace('Chat');
             } else {
+
+                navigation.canGoBack() &&
+                navigation.PopToBack();
                 // User is signed out
                 // ...
             }
