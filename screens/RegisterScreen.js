@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Input, Button } from "react-native-elements";
+import {auth, createUserWithEmailAndPassword, updateProfile} from "../firebase";
 
 const RegisterScreen = () => {
     const [email, setEmail] = useState('');
@@ -8,8 +9,31 @@ const RegisterScreen = () => {
     const [password, setPassword] = useState('');
     const [imageUrl, setimageUrl] = useState('');
 
+    const register = () => {
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                updateProfile(user, {
+                    displayName: name,
+                    photoURL: imageUrl ? imageUrl : "https://i.imgur.com/9pNffkj.png"
+                }).then(() => {
+                    // Update successful
+                    // ...
+                }).catch((error) => {
+                    // An error occurred
+                    // ...
+                });
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorMessage)
+            });
+    }
+
     return (
-        <View style={style.container}>
+        <View style={styles.container}>
             <Input
                 placeholder="Enter your name"
                 label="Name"
@@ -43,12 +67,11 @@ const RegisterScreen = () => {
                 onChangeText={text => setimageUrl(text)}
             />
 
-            <Button title="Register" style={style.button} />
+            <Button title="Register" onPress={register} style={styles.button} />
         </View>
     )
 }
 
-export default RegisterScreen;
 const styles = StyleSheet.create({
     button: {
         width: 200,
@@ -60,3 +83,4 @@ const styles = StyleSheet.create({
         padding: 10
     }
 })
+export default RegisterScreen;
