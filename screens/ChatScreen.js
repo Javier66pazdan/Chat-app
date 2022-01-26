@@ -1,10 +1,11 @@
 import React, { useLayoutEffect, useState, useCallback, useEffect} from 'react';
-import { View, Text } from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import { auth, signOut, db, collection, addDoc, doc, onSnapshot } from "../firebase";
+import {orderBy, query} from 'firebase/firestore';
 import {AntDesign} from '@expo/vector-icons';
 import {Avatar} from "react-native-elements";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { GiftedChat } from 'react-native-gifted-chat'
+import { GiftedChat} from 'react-native-gifted-chat'
 
 const ChatScreen = ({ navigation }) => {
     const [messages, setMessages] = useState([]);
@@ -24,7 +25,8 @@ const ChatScreen = ({ navigation }) => {
     //     ])
     // }, [])
     useLayoutEffect(() => {
-        const unsub = onSnapshot(collection(db, "chats"), (snapshot) => {
+        const q = query(collection(db, "chats"), orderBy('createdAt', 'desc'));
+        const unsub = onSnapshot(q, (snapshot) => {
             setMessages(
                 snapshot.docs.map(doc => ({
                 _id: doc.data()._id,
@@ -57,12 +59,20 @@ const ChatScreen = ({ navigation }) => {
         navigation.setOptions({
             headerLeft: () => (
                 <View>
-                    <Avatar style={{marginLeft: 20}}
+                    {/*<Avatar style={{marginLeft: 20}}*/}
+                    {/*        size="medium"*/}
+                    {/*    rounded*/}
+                    {/*    source={{*/}
+                    {/*        // uri: auth?.currentUser?.photoURL*/}
+                    {/*        uri: "https://i.imgur.com/9pNffkj.png"*/}
+                    {/*    }}*/}
+                    {/*/>*/}
+                    <Avatar
+                        // style={{marginLeft: 20}}
+                        size="small"
                         rounded
-                        source={{
-                            // uri: auth?.currentUser?.photoURL
-                            uri: "https://i.imgur.com/9pNffkj.png"
-                        }}
+                        containerStyle={{ marginLeft: 20 }}
+                        source={{ uri: `${auth?.currentUser?.photoURL}` }}
                     />
                 </View>
             ),
@@ -84,17 +94,18 @@ const ChatScreen = ({ navigation }) => {
             console.log(error)
         });
     }
+
     return (
-        <GiftedChat
-            messages={messages}
-            showAvatarForEveryMessage={true}
-            onSend={messages => onSend(messages)}
-            user={{
-                _id: auth?.currentUser?.email,
-                name: auth?.currentUser?.displayName,
-                avatar: auth?.currentUser?.photoURL
-            }}
-        />
+            <GiftedChat
+                messages={messages}
+                showAvatarForEveryMessage={true}
+                onSend={messages => onSend(messages)}
+                user={{
+                    _id: auth?.currentUser?.email,
+                    name: auth?.currentUser?.displayName,
+                    avatar: auth?.currentUser?.photoURL
+                }}
+            />
     )
 }
 
